@@ -161,6 +161,24 @@ describe("safeExtractZip", () => {
     await expect(safeExtractZip(zip, dest)).rejects.toBeInstanceOf(ZipError);
   });
 
+  it("accepts .jsx and .tsx bundle sources", async () => {
+    const zip = await writeZip(
+      "jsx.zip",
+      buildZip([
+        { name: "index.html", data: Buffer.from("<html></html>") },
+        { name: "animations.jsx", data: Buffer.from("export const A = () => <div/>") },
+        { name: "types.tsx", data: Buffer.from("export const T: any = () => <div/>") },
+      ]),
+    );
+    const dest = path.join(tmp, "out-jsx");
+    const result = await safeExtractZip(zip, dest);
+    const names = result.files.map((f) => f.relPath).sort();
+    expect(names).toContain("animations.jsx");
+    expect(names).toContain("types.tsx");
+    const jsx = result.files.find((f) => f.relPath === "animations.jsx");
+    expect(jsx?.contentType).toBe("text/javascript; charset=utf-8");
+  });
+
   it("rejects disallowed file extensions", async () => {
     const zip = await writeZip(
       "sh.zip",
