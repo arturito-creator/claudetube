@@ -1,0 +1,27 @@
+node_modules
+.next
+out
+dist
+coverage
+
+# env
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
+npm-debug.log*
+
+# misc
+.vscode
+.idea
+*.tsbuildinfo
+next-env.d.ts
+
+# local uploads for dev without minio
+.uploads

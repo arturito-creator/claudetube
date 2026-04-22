@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: claudetube
+      POSTGRES_PASSWORD: claudetube
+      POSTGRES_DB: claudetube
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  minio:
+    image: quay.io/minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: claudetube
+      MINIO_ROOT_PASSWORD: claudetube
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio:/data
+
+  # One-shot to create the bucket on first boot.
+  minio-init:
+    image: quay.io/minio/mc:latest
+    depends_on: [minio]
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc alias set local http://minio:9000 claudetube claudetube) do sleep 2; done;
+      /usr/bin/mc mb -p local/claudetube || true;
+      /usr/bin/mc anonymous set download local/claudetube || true;
+      exit 0;
+      "
+
+volumes:
+  db:
+  minio:

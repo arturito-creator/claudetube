@@ -1,0 +1,47 @@
+:root {
+  color-scheme: dark;
+}
+html, body {
+  margin: 0;
+  height: 100%;
+  background: radial-gradient(circle at 30% 20%, #1a1030, #05070f 70%);
+  color: #f7f7f5;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+main {
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+.stage {
+  text-align: center;
+}
+.orb {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 2rem;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #ff5a1f, #ffb86b, #ff5a1f);
+  filter: blur(1px);
+  animation: spin 4s linear infinite, pulse 2.2s ease-in-out infinite;
+}
+h1 {
+  font-size: 2.4rem;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+h1 span {
+  color: #ff5a1f;
+}
+p#clock {
+  margin-top: 1rem;
+  font-variant-numeric: tabular-nums;
+  color: rgba(247, 247, 245, 0.6);
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
