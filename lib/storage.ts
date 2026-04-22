@@ -6,6 +6,7 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   HeadObjectCommand,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -81,6 +82,35 @@ export async function presignGet(key: string, expiresSec = 60 * 60): Promise<str
   return getSignedUrl(s3, new GetObjectCommand({ Bucket: bucket, Key: key }), {
     expiresIn: expiresSec,
   });
+}
+
+export async function presignPut(
+  key: string,
+  {
+    contentType,
+    expiresSec = 10 * 60,
+  }: { contentType?: string; expiresSec?: number } = {},
+): Promise<string> {
+  return getSignedUrl(
+    s3,
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      ContentType: contentType,
+    }),
+    { expiresIn: expiresSec },
+  );
+}
+
+export async function getObjectBuffer(key: string): Promise<Buffer> {
+  const { stream } = await getObjectStream(key);
+  const chunks: Buffer[] = [];
+  for await (const c of stream) chunks.push(c as Buffer);
+  return Buffer.concat(chunks);
+}
+
+export async function deleteObject(key: string): Promise<void> {
+  await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
 }
 
 /** Upload an entire extracted bundle directory to S3. */
