@@ -16,6 +16,12 @@ export const s3 = new S3Client({
   region: process.env.S3_REGION || "us-east-1",
   endpoint: process.env.S3_ENDPOINT || undefined,
   forcePathStyle: process.env.S3_FORCE_PATH_STYLE !== "false",
+  // Cloudflare R2 rejects requests that carry the SDK's default
+  // x-amz-checksum-* headers when the body is provided separately (as with
+  // browser PUTs against a presigned URL). Skip checksum injection unless an
+  // operation explicitly needs it.
+  requestChecksumCalculation: "WHEN_REQUIRED",
+  responseChecksumValidation: "WHEN_REQUIRED",
   credentials: {
     accessKeyId: process.env.S3_ACCESS_KEY || "claudetube",
     secretAccessKey: process.env.S3_SECRET_KEY || "claudetube",
