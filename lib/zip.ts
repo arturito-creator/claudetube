@@ -1,5 +1,6 @@
 import { createWriteStream, promises as fs } from "node:fs";
 import path from "node:path";
+import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import yauzl from "yauzl";
 
@@ -205,7 +206,7 @@ export async function safeExtractZip(
         // Enforce the per-file cap during streaming as a second line of defense
         // against lying headers.
         let written = 0;
-        const counter = new (await import("node:stream")).Transform({
+        const counter = new Transform({
           transform(chunk, _enc, cb) {
             written += chunk.length;
             if (written > limits.perFileMaxBytes) {
