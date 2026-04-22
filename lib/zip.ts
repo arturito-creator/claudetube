@@ -41,6 +41,9 @@ const CONTENT_TYPES: Record<string, string> = {
   ".css": "text/css; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".mjs": "text/javascript; charset=utf-8",
+  ".jsx": "text/javascript; charset=utf-8",
+  ".ts": "text/javascript; charset=utf-8",
+  ".tsx": "text/javascript; charset=utf-8",
   ".json": "application/json; charset=utf-8",
   ".map": "application/json; charset=utf-8",
   ".svg": "image/svg+xml",
@@ -69,8 +72,8 @@ const CONTENT_TYPES: Record<string, string> = {
 };
 
 // Only file extensions listed here are allowed out of the zip. Anything else
-// (`.sh`, `.exe`, `.php`, `.py`, etc.) is rejected — Claude Design bundles
-// don't need them, and shipping executables to the bundle origin is risky.
+// (`.sh`, `.exe`, `.php`, `.py`, etc.) is rejected — shipping executables
+// or server-side scripts to the bundle origin is risky.
 const ALLOWED_EXTS = new Set(Object.keys(CONTENT_TYPES));
 
 /** Normalize a zip entry path into a repo-relative POSIX path, or throw. */
